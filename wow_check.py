@@ -41,7 +41,6 @@ class Warcraftlogs():
         self.zones = self.get_json(self.baseUrl + "zones?api_key={}".format(api_key))
         self.ranking = self.get_json(self.baseUrl + "rankings/character/{}/{}/{}?api_key={}".format(self.pname, self.pserver, self.pregion, self.api_key))
 
-
     def get_json(self, url):
         '''
         Gets a JSON-list, downloaded from an URL
@@ -69,6 +68,11 @@ class Warcraftlogs():
 
 
     def get_bossname(self, boss_id):
+        '''
+        Returns the Boss-Name of a boss-id.
+        INPUT: boss_id - integera
+        OUTPUT: string
+        '''
         for zone in zones:
             for encounter in zone["encounters"]:
                 if encounter["id"] == boss_id:
@@ -81,44 +85,85 @@ class Warcraftlogs():
         nhc = 3, hc = 4, mythic = 5
         '''
         result = []
+        '''
+        Model Schema for encounter
+            [
+                {
+                    "encounter": 2032,
+                    "class": 6,
+                    "spec": 3,
+                    "guild": "Donut Care",
+                    "rank": 5120,
+                    "outOf": 13475,
+                    "duration": 295770,
+                    "startTime": 1507231241675,
+                    "reportID": "8gwAKG9JLCtMNv4R",
+                    "fightID": 28,
+                    "difficulty": 5,
+                    "size": 20,
+                    "itemLevel": 940,
+                    "total": 1243790,
+                    "estimated": true
+                }
+            ]
+        '''
         for encounter in self.ranking:
+            # return value
             boss_dict = {}
             if encounter["difficulty"] == difficulty:
                 report_id = encounter["reportID"]
-                print(report_id)
                 boss_id = encounter["encounter"]
                 bracket = round((1-encounter["rank"]/encounter["outOf"])*100)   # bracket
-                #---------- Fight-reports
+                '''
+                Model Schema for fight
+                    {
+                          "id": 1,
+                          "start_time": 268763,
+                          "end_time": 516888,
+                          "boss": 2032,
+                          "size": 20,
+                          "difficulty": 5,
+                          "kill": true,
+                          "partial": 3,
+                          "bossPercentage": 0,
+                          "fightPercentage": 0,
+                          "lastPhaseForPercentageDisplay": 0,
+                          "name": "Goroth"
+                    }
+                '''
                 fights = self.get_json(self.baseUrl + "report/fights/{}?api_key={}".format(report_id, self.api_key))
                 for fight in fights["fights"]:
                     if fight["boss"] == boss_id and fight["kill"] and fight["difficulty"] == difficulty:
-                        boss_name = fight["name"]                               # name des bosses z.b. goroth
-                        start_time = fight["start_time"]
-                        end_time = fight["end_time"]
-                        duration = (end_time - start_time) / 1000               # sekunden zu berechnung der dps
-                        #--------- table view reports
-                        entries =  self.get_json(self.baseUrl + "report/tables/{}/{}?start={}&end={}&api_key={}".format(
-                                    role,
-                                    report_id,
-                                    start_time,
-                                    end_time,
-                                    self.api_key
-                                    )
-                        )
-                        for player in entries["entries"]:
-                            if player["name"] == self.pname:
-                                dps = round(player["total"] / duration, 2)      # dps
-                                #---- build output
-                                boss_dict["bossName"] = boss_name
+
+                        '''
+                        - Table view reports
+                        Model Schema for playerInfo
+                        {
+                            "name": "Kesanna",
+                            "id": 26,
+                            "guid": 101104115,
+                            "type": "Monk",
+                            "itemLevel": 938,
+                            "icon": "Monk-Brewmaster",
+                            "total": 2835344293,
+                            "activeTime": 3819687,
+                            "activeTimeReduced": 3819687,
+                            "blocked": 25327745,
+                            "abilities": [],
+                            "gear": []
+                        }
+                        '''
+                        entries =  self.get_json(self.baseUrl + "report/tables/{}/{}?start={}&end={}&api_key={}".format( role,report_id, fight["start_time"], fight["end_time"], self.api_key ))
+                        for playerInfo in entries["entries"]:
+                            if playerInfo["name"] == self.pname:
+                                duration = (fight["end_time"] - fight["start_time"]) / 1000
+                                dps = round(playerInfo["total"] / duration, 2)
+                                boss_dict["bossName"] = fight["name"]
                                 boss_dict["bracket"] = bracket
                                 boss_dict["dps"] = dps
                 result.append(boss_dict)
 
         return result
-
-
-    def __str__(self):
-        print(self.pname)
 
 #--------------------------------------------
 
@@ -128,6 +173,7 @@ player_region = 'EU'
 api_key = '6bd918e14d71db254e0603d4bab015fe'
 
 player = Warcraftlogs(player_name, player_server, player_region, api_key)
-print("NHC stats für {}".format(player_name))
+
 for raidboss in player.get_Stats(3, "damage-done"):
+
     print("Boss: {}\n--> Bracket: {}\t Max.Dps:{}\n".format(raidboss["bossName"], raidboss["bracket"], raidboss["dps"]))
