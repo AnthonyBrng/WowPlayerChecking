@@ -102,14 +102,13 @@ class Warcraftlogs():
             ]
         '''
         for encounter in self.ranking:
-            # return value
-            boss_dict = {}
+            boss_dict = {}  # return value
             if encounter["difficulty"] == difficulty:
                 report_id = encounter["reportID"]
                 boss_id = encounter["encounter"]
-                bracket = round((1-encounter["rank"]/encounter["outOf"])*100)   # bracket
+                bracket = round((1-encounter["rank"]/encounter["outOf"])*100)
                 '''
-                Model Schema for fight
+                Model Schema for fights
                     {
                           "id": 1,
                           "start_time": 268763,
@@ -128,7 +127,6 @@ class Warcraftlogs():
                 fights = self.get_json(self.baseUrl + "report/fights/{}?api_key={}".format(report_id, self.api_key))
                 for fight in fights["fights"]:
                     if fight["boss"] == boss_id and fight["kill"] and fight["difficulty"] == difficulty:
-
                         '''
                         - Table view reports
                         Model Schema for playerInfo
@@ -158,10 +156,9 @@ class Warcraftlogs():
                                 boss_dict["report"] = report_id
                                 boss_dict["fight_id"] = fight["id"]
                 result.append(boss_dict)
-
-
         self.output.append({"difficulty" : difficulty, "bosses": result})
-        #return result
+        pass
+
 
 
 
