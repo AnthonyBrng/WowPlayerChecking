@@ -185,7 +185,7 @@ class Warcraftlogs():
 
         result += "</body>"
         result += "</html>"
-        outputfile = open("{}_{}_{}.html".format(self.pname, self.pserver, self.pregion), "w")
+        outputfile = open("players/{}_{}_{}.html".format(self.pname, self.pserver, self.pregion), "w")
         outputfile.write(result)
         outputfile.close()
 
