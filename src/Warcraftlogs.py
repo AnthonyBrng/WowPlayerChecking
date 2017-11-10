@@ -163,7 +163,7 @@ class Warcraftlogs():
 
 
     def getHtml(self):
-        result = "<div class='panel'>"
+        result = "<div class='pve_panel'>"
         for entry in self.output: # entr = dict
             result += "<h3>{}</h3>".format(self.getDifficultyName(entry["difficulty"]))
             result += "<table class=raid_table>"

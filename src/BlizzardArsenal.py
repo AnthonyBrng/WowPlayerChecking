@@ -13,6 +13,7 @@ class BlizzStats():
         self.races = self.getRaceMapping()
         self.charInfo = self.buildCharinfo()
         self.pvpInfo = self.buildPvpinfo()
+        self.mplusInfo = self.buildMplusInfo()
 
     def getBaseUrlFromRegion(self):
         result = "https://eu.api.battle.net/wow/"
@@ -124,33 +125,101 @@ class BlizzStats():
 
 
     def buildPvpinfo(self):
+        '''
+        {
+            "pvptype" :
+                {
+                    "rating": string
+                    "seasonPlayed": integer
+                    "seasonWon": integer
+                }
+        }
+        '''
         print("Calculating pvp stats...")
         result = {}
         pvpinfo_json = self.charInfo["pvp"]["brackets"]
         result["2v2"] = {
             "rating": pvpinfo_json["ARENA_BRACKET_2v2"]["rating"],
-            "seasonPlayed": pvpinfo_json["ARENA_BRACKET_2v2"]["seasonPlayed"],
-            "seasonWon": pvpinfo_json["ARENA_BRACKET_2v2"]["seasonWon"]
+            "seasonWon": pvpinfo_json["ARENA_BRACKET_2v2"]["seasonWon"],
+            "seasonPlayed": pvpinfo_json["ARENA_BRACKET_2v2"]["seasonPlayed"]
         }
         result["3v3"] = {
             "rating": pvpinfo_json["ARENA_BRACKET_3v3"]["rating"],
-            "seasonPlayed": pvpinfo_json["ARENA_BRACKET_3v3"]["seasonPlayed"],
-            "seasonWon": pvpinfo_json["ARENA_BRACKET_3v3"]["seasonWon"]
+            "seasonWon": pvpinfo_json["ARENA_BRACKET_3v3"]["seasonWon"],
+            "seasonPlayed": pvpinfo_json["ARENA_BRACKET_3v3"]["seasonPlayed"]
+
         }
         result["rbg"] = {
             "rating": pvpinfo_json["ARENA_BRACKET_RBG"]["rating"],
-            "seasonPlayed": pvpinfo_json["ARENA_BRACKET_RBG"]["seasonPlayed"],
-            "seasonWon": pvpinfo_json["ARENA_BRACKET_RBG"]["seasonWon"]
+            "seasonWon": pvpinfo_json["ARENA_BRACKET_RBG"]["seasonWon"],
+            "seasonPlayed": pvpinfo_json["ARENA_BRACKET_RBG"]["seasonPlayed"]
+
         }
         print("...Done! (pvp stats)")
         return result
 
-    def getPvpHtml(self):
-        pass
 
+    def buildMplusInfo(self):
+        print("Calculating Mythic+ stats...")
+        url = self.baseUrl+"/character/{}/{}?fields=achievements&locale=en_GB&apikey={}".format(self.pserver, self.pname, self.api_key)
+        mplus_json = self.get_json(url)
+
+        mplus_crits = {
+            "2": 33096,
+            "5": 33097,
+            "10": 33098,
+            "15": 32028
+        }
+
+        # mythic plus quantities
+        quants = {
+            "2": 0,
+            "5": 0,
+            "10": 0,
+            "15": 0
+        }
+
+        lst_criteria = mplus_json["achievements"]["criteria"]       # from Api
+        lst_quants = mplus_json["achievements"]["criteriaQuantity"] # from Api
+        for critname, criteria in mplus_crits.items():
+            quants[critname] = lst_quants[lst_criteria.index(criteria)]
+
+        print("...Done!")
+        return quants
+
+    def getMplusHtml(self):
+        result = "<div class='mplus_panel'>"
+        result += "<h3>{}</h3>".format("Mythic+ in time")
+        result += "<table class='mplus_table'>"
+        result += "<tr> <th>Level</th> <th>Finished</th><tr>"
+        for level, quant in self.mplusInfo.items():
+            result += "<tr><td>Mythic {}</td><td id='number_td'>{}</td></tr>".format(level, quant)
+        result += "</table>"
+        result += "</div>"
+        return result
+
+
+    def getPvpHtml(self):
+        result = "<div class='pvp_panel'>"
+        result += "<h3>{}</h3>".format("Rated-PvP")
+        result += "<table class='pvp_table'>"
+        result += "<tr> <th>Type</th> <th>Rating</th> <th>Won</th> <th>played</th> <th>Win-Ratio %</th> <tr>"
+        for pvptype in self.pvpInfo:
+            result += self.getTableRow(pvptype, self.pvpInfo[pvptype])
+        result += "</table>"
+        result += "</div>"
+        return result
+
+    def getTableRow(self, pvptype, stats):
+        result = "<tr><td>{}</td>".format(pvptype)
+        for stat in stats:
+            result += "<td class='{0}' id='number_td'>{0}</td>".format(stats[stat]) #result += "<td>{}</td><td>{}</td><td>{}</td><td>{}%</td>".format(rating, seasonWon, seasonPlayed, (seasonWon/seasonPlayed) * 100)
+        result +="<td id='number_td'>{:05.2f}%</td>".format(stats["seasonWon"] / stats["seasonPlayed"]*100)
+        result += "</tr>"
+        return result
 
     def getCharinfoHtml(self):
-        return "<div class='player_panel'><p class='player_paragraph'><b><a class='char_link' style='color:{};' href='{}'>{}</a></b> on {} ({})</p><p><i>{} {}</i></p></div>".format(self.getClasscolorByClassname(self.charInfo["class"]),"https://worldofwarcraft.com/de-de/character/"+self.pserver+"/"+ self.pname, self.pname, self.pserver, self.pregion, self.charInfo["class"], self.charInfo["race"])
+        return "<div class='player_panel'><p class='player_paragraph'><b><a class='char_link' style='color:{};' href='{}'>{}*</a></b> on {} ({})</p><p><i>{} {}</i></p></div>".format(self.getClasscolorByClassname(self.charInfo["class"]),"https://worldofwarcraft.com/de-de/character/"+self.pserver+"/"+ self.pname, self.pname, self.pserver, self.pregion, self.charInfo["class"], self.charInfo["race"])
 
 
     def getClasscolorByClassname(self, classname):
