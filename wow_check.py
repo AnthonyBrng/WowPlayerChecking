@@ -11,11 +11,11 @@ api_key = '6bd918e14d71db254e0603d4bab015fe'
 
 #--------------------------------------------
 # Warcraftlogs
-player = Warcraftlogs(player_name, player_server, player_region, api_key)
+wlogs = Warcraftlogs(player_name, player_server, player_region, api_key)
 
-collect_nhc = CollectWlogsStats(player, 3, "damage-done")
-collect_hc = CollectWlogsStats(player, 4, "damage-done")
-collect_my = CollectWlogsStats(player, 5, "damage-done")
+collect_nhc = CollectWlogsStats(wlogs, 3, "damage-done")
+collect_hc = CollectWlogsStats(wlogs, 4, "damage-done")
+collect_my = CollectWlogsStats(wlogs, 5, "damage-done")
 
 collect_nhc.start()
 collect_hc.start()
@@ -26,11 +26,13 @@ collect_hc.join()
 collect_my.join()
 print("...Done! (Warcraftlogs)")
 
+#--------------------------------------------
+# Wowprogress
 
-outputs = [player.getHtml()]
+
 
 #--------------------------------------------
 # output
-
+outputs = [wlogs.getHtml()]
 gen = HtmlGen( outputs, player_name, player_server, player_region)
 gen.start()
