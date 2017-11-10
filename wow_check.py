@@ -40,13 +40,16 @@ class Warcraftlogs():
         INPUT:  url - string
         OUTPUT: list
         '''
+        print("Downloading JSON from {}...".format(url))
         try:
             req = requests.get(url=url)
         except:
             print("Error on pulling from Warcraftlogs!")
             exit()
         else:
+            print("...Done! (Downloading)")
             return req.json()
+
 
 
     def get_classname(self, class_id):
@@ -164,43 +167,37 @@ class Warcraftlogs():
 
 
     def getHtml(self):
-        result = "<html>"
-        result += self.html_header()
-        result += "<body>"
-        result += "<p>{} on {} ({})</p>".format(self.pname, self.pserver, self.pregion)
+        result = "<div class='panel'>"
         for entry in self.output: # entr = dict
-            result += "<h3>{}</h3>".format(self.getDifficultyName(entry["difficulty"]))
-            result += "<table>"
+            result += "<h3>{}</h3>".format(getDifficultyName(entry["difficulty"]))
+            result += "<table class=raid_table>"
             result += "<tr><th>Boss</th><th>Todays Bracket</th><th>Max. Output</th><th>Link</th></tr>"
             bracket_counter = 0
             dps_counter = 0
+
             for boss in entry["bosses"]:
-                #print(bossLst)
-                #for boss in bossLst:
-                    result += self.html_tableRow(boss["bossName"], boss["bracket"], round(boss["dps"]), boss["report"], boss["fight_id"])
-                    bracket_counter += boss["bracket"]
-                    dps_counter += boss["dps"]
+                result += self.html_tableRow(boss["bossName"], boss["bracket"], round(boss["dps"]), boss["report"], boss["fight_id"])
+                bracket_counter += boss["bracket"]
+                dps_counter += boss["dps"]
+
             result += self.html_tableFoot("Durchschnitt", round(bracket_counter/len(entry["bosses"])), round(dps_counter/len(entry["bosses"])) )
             result += "</table>"
 
-        result += "</body>"
-        result += "</html>"
-        outputfile = open("players/{}_{}_{}.html".format(self.pname, self.pserver, self.pregion), "w")
-        outputfile.write(result)
-        outputfile.close()
+        result += "</div>"
+        return result
 
 
     def html_tableRow(self, bossname, bracket, dps,report_id, fight_id):
-        return "<tr><td class='bossname'>{}</td><td class='bracket'>{}</td><td class='dps'>{}</td><td class=wl_link><b><a href='{}'>*</a></b></td></tr>".format(bossname, bracket, dps, self.wlUrl+"/reports/"+report_id+"#fight="+str(fight_id))
+        return "<tr><td class='bossname'>{}</td><td class='bracket'>{}</td><td class='dps'>{}</td><td class=wl_link><b><a class='raid_link' href='{}'>*</a></b></td></tr>".format(bossname, bracket, dps, self.wlUrl+"/reports/"+report_id+"#fight="+str(fight_id))
 
     def html_tableFoot(self, bossname, bracket, dps):
         return "<tr class='tablefoot'><td class='bossname'><b>{}</b></td><td class='bracket'><b>{}</b></td><td class='dps'><b>{}</b></td><td> </td></tr>".format(bossname, bracket, dps)
 
-    def html_header(self):
-        return "<head><style>a{color: green;text-decoration: none;}.wl_link{text-align: center;}.tablefoot{background-color:#d5d6d4;}p{font-family:Arial;font-size:15px}h3{font-family:Arial;}table{font-family:Arial;border: 5px solid #98bc56;border-radius: 10px; padding: 5px;}th{padding:8px;background-color: #d2d6cb ;}td{padding:5px;background-color: #ddeac5 ;}.bossname{text-align: left;}.bracket{text-align: center;}.dps{text-align: right;}</style></head>"
+    #def html_header(self):
+    #    return "<head><style>.raid_link{color: green;text-decoration: none;}.wl_link{text-align: center;}.tablefoot{background-color:#d5d6d4;}p{font-family:Arial;font-size:15px}h3{font-family:Arial;}.raid_table{font-family:Arial;border: 5px solid #98bc56;border-radius: 10px; padding: 5px;}th{padding:8px;background-color: #d2d6cb ;}td{padding:5px;background-color: #ddeac5 ;}.bossname{text-align: left;}.bracket{text-align: center;}.dps{text-align: right;}</style></head>"
 
-    def getDifficultyName(self, id):
-        return ["Unknown difficulty","Unknown difficulty","Unknown difficulty","Normal","Heroic","Mythic"][id]
+    #def getDifficultyName(self, id):
+    #    return ["Unknown difficulty","Unknown difficulty","Unknown difficulty","Normal","Heroic","Mythic"][id]
 
 #--------------------------------------------
 import threading
@@ -214,9 +211,46 @@ class CollectPlayerStats(threading.Thread):
         self.role = role
 
     def run(self):
+        print("Collecting Data from Warcraftlogs ({},{})...".format(getDifficultyName(self.difficulty), self.role))
         self.player.get_Stats(self.difficulty, self.role)
 
 #--------------------------------------------
+
+class HtmlGen():
+
+    def __init__(self, divLst, playername, playerserver, playerregion):
+        self.divLst = divLst
+        self.pname = playername
+        self.pserver = playerserver
+        self.pregion = playerregion
+
+    def start(self):
+        print("Creating HTML-files...")
+        outputfile = open("players/{}_{}_{}.html".format(self.pname, self.pserver, self.pregion), "w")
+        result = "<html>"
+        result += self.html_header()
+        result += "<body>"
+        for htmlString in self.divLst :
+            result += htmlString
+
+        result += "</body"
+        result += "</html>"
+        outputfile.write(result)
+        outputfile.close()
+        print("...Done! (HTML-files)")
+
+
+    def html_header(self):
+        return "<head><style>.raid_link{color: green;text-decoration: none;}.wl_link{text-align: center;}.tablefoot{background-color:#d5d6d4;}p{font-family:Arial;font-size:15px}h3{font-family:Arial;}.raid_table{font-family:Arial;border: 5px solid #98bc56;border-radius: 10px; padding: 5px;}th{padding:8px;background-color: #d2d6cb ;}td{padding:5px;background-color: #ddeac5 ;}.bossname{text-align: left;}.bracket{text-align: center;}.dps{text-align: right;}</style></head>"
+
+
+
+
+#--------------------------------------------
+
+def getDifficultyName(id):
+    return ["Unknown difficulty","Unknown difficulty","Unknown difficulty","Normal","Heroic","Mythic"][id]
+
 player_name = 'Horscanigun'
 player_server = 'Blackhand'
 player_region = 'EU'
@@ -235,5 +269,9 @@ collect_my.start()
 collect_nhc.join()
 collect_hc.join()
 collect_my.join()
+print("...Done! (Warcraftlogs)")
 
-player.getHtml()
+outputs = [player.getHtml()]
+
+gen = HtmlGen( outputs, player_name, player_server, player_region)
+gen.start()
