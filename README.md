@@ -33,6 +33,7 @@ Make sure you have performed the following things before running this apllicatio
 
 # Things to TODO
 - INTENSE testing
+- Catching input errors
 - Improve Stylemanagement
   - rename tag identifyer and calsses
   - external .css file
