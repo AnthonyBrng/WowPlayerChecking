@@ -2,7 +2,6 @@
 # Imports
 import sys
 import argparse
-
 from src.Warcraftlogs import Warcraftlogs
 from src.HtmlGenerator import HtmlGen
 from src.CollectorThreads import CollectWlogsStats
@@ -10,7 +9,29 @@ from src.BlizzardArsenal import BlizzStats
 from settings import *
 
 def main():
-    
+    '''
+    AUTHOR:         Anthony Bruening
+    DESCRIPTION:    Starting point of checking a WoW-players stats.
+                    Following thing get checked:
+                        - Warcraftlogs :
+                            - for latest raid only
+                            - DPS-Brackets
+                            - Maximum (damage/healing) done
+                        - Blizzardarsenal:
+                            - Rated PvP stats:
+                                - rating
+                                - seasonWon / seasonPlayed
+                                - win ration
+                            - Mythic+ in times:
+                                - M+2
+                                - M+5
+                                - M+10
+                                - M+15
+    '''
+
+    #--------------------------------------------
+    # Argument Parsing
+    #
     err_msgs = []
     if BLIZZARD_APIKEY == '':
         err_msgs.append("Error: Please make sure the Blizzard-Apikey is set in settings.py!")
@@ -52,7 +73,7 @@ def main():
     #--------------------------------------------
     # output
     outputs = [blizz.getCharinfoHtml(), wlogs.getHtml(), blizz.getPvpHtml(), blizz.getMplusHtml()]
-    gen = HtmlGen( outputs, args.playername , args.server, args.region)
+    gen = HtmlGen( outputs, args.playername , args.server, args.region, args.role)
     gen.start()
 
 
