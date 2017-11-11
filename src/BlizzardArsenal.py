@@ -182,7 +182,11 @@ class BlizzStats():
         lst_criteria = mplus_json["achievements"]["criteria"]       # from Api
         lst_quants = mplus_json["achievements"]["criteriaQuantity"] # from Api
         for critname, criteria in mplus_crits.items():
-            quants[critname] = lst_quants[lst_criteria.index(criteria)]
+            try:
+                quants[critname] = lst_quants[lst_criteria.index(criteria)]
+            except ValueError:
+                quants[critname] = 0
+            
 
         print("...Done!")
         return quants

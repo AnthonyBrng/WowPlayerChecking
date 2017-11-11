@@ -1,6 +1,9 @@
 # pip install requests
 import requests
 class Warcraftlogs():
+'''
+'''
+
 
     baseUrl = "https://www.warcraftlogs.com:443/v1/"
     wlUrl = "https://www.warcraftlogs.com/"
@@ -23,10 +26,11 @@ class Warcraftlogs():
     '''
     output = []
 
-    def __init__(self, player_name, player_server, player_region, api_key):
+    def __init__(self, player_name, player_server, player_region, role, api_key):
         self.pname = player_name
         self.pserver = player_server
         self.pregion = player_region
+        self.role = role
         self.api_key = api_key
         self.classes = self.get_json(self.baseUrl + "classes?api_key={}".format(api_key))
         self.zones = self.get_json(self.baseUrl + "zones?api_key={}".format(api_key))
@@ -73,7 +77,7 @@ class Warcraftlogs():
                     return encounter["name"]
 
 
-    def get_Stats(self, difficulty, role):
+    def get_Stats(self, difficulty):
         '''
         Gets all stats we want, for a specific difficulty id.
         nhc = 3, hc = 4, mythic = 5
@@ -145,7 +149,7 @@ class Warcraftlogs():
                             "gear": []
                         }
                         '''
-                        entries =  self.get_json(self.baseUrl + "report/tables/{}/{}?start={}&end={}&api_key={}".format( role,report_id, fight["start_time"], fight["end_time"], self.api_key ))
+                        entries =  self.get_json(self.baseUrl + "report/tables/{}/{}?start={}&end={}&api_key={}".format( self.role,report_id, fight["start_time"], fight["end_time"], self.api_key ))
                         for playerInfo in entries["entries"]:
                             if playerInfo["name"] == self.pname:
                                 duration = (fight["end_time"] - fight["start_time"]) / 1000
@@ -167,7 +171,7 @@ class Warcraftlogs():
         for entry in self.output: # entr = dict
             result += "<h3>{}</h3>".format(self.getDifficultyName(entry["difficulty"]))
             result += "<table class=raid_table>"
-            result += "<tr><th>Boss</th><th>Todays Bracket</th><th>Max. Output</th><th>Link</th></tr>"
+            result += "<tr><th>Boss</th><th>Todays Bracket (DPS)</th><th>Max. {}</th><th>Link</th></tr>".format(self.role.split("-")[0])
             bracket_counter = 0
             dps_counter = 0
 
