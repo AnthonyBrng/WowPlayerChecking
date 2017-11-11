@@ -29,6 +29,8 @@ class Warcraftlogs():
     ]
     '''
     output = []
+    baseUrl = "https://www.warcraftlogs.com:443/v1/"
+    wlUrl = "https://www.warcraftlogs.com/"
 
     def __init__(self, player_name, player_server, player_region, role, api_key):
         self.pname = player_name

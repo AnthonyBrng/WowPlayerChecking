@@ -50,6 +50,7 @@ def main():
     parser.add_argument("--role", help="Which stat to check. e.g. damage done or healing", choices=["damage-done", "healing"], default="damage-done")
     args = parser.parse_args()
 
+    print("Version ", VERSION)
     #--------------------------------------------
     # Collecting Data
     #
@@ -76,6 +77,8 @@ def main():
     gen = HtmlGen( outputs, args.playername , args.server, args.region, args.role)
     gen.start()
 
+    print("Finished! ")
+    print("Version ", VERSION)
 
 if __name__ == "__main__":
    main()

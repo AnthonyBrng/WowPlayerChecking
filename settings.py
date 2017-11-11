@@ -22,11 +22,17 @@ How to get the Api-Key:
     1. Sign up on https://dev.battle.net/
     2. Log into your account
     3. Click on the top-right corner on MyAccount
-    4. Goto Tab key
-    5. Create Apikey
+    4. Goto Key-Tab
+    5. Create API key
     6. Copy the public apikey
     7. Paste the key between the single quotes
     8. Save this file
 
 '''
 BLIZZARD_APIKEY = ''
+
+
+'''
+Dont touch this below.
+'''
+VERSION = '0.2'
