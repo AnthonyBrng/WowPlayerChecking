@@ -14,6 +14,12 @@ Make sure you have performed the following things before running this apllicatio
 * you've got a Blizzard-API key			(instructions where to get them below)
 * you've got a Warcraftlogs-API key			"
 
+# Running the app
+1. Make sure you entered your two API-Keys into the settings.py
+2. Open the terminal/commandline
+3. change your directory to WowPlayerChecking
+4. `python3 check.py --help`
+
 # Getting API Keys
 ### Blizzard API Key
 1. Sign up on https://dev.battle.net/
