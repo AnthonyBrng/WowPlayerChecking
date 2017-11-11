@@ -1,4 +1,4 @@
-
+import os
 class HtmlGen():
 
     def __init__(self, divLst, playername, playerserver, playerregion):
@@ -8,8 +8,11 @@ class HtmlGen():
         self.pregion = playerregion
 
     def start(self):
+        directory = "players/"
         print("Creating HTML-files...")
-        outputfile = open("players/{}_{}_{}.html".format(self.pname, self.pserver, self.pregion), "w")
+        if not os.path.exists(directory):
+            os.makedirs(directory)
+        outputfile = open(directory+"{}_{}_{}.html".format(self.pname, self.pserver, self.pregion), "w")
         result = "<html>"
         result += self.html_header()
         result += "<body>"
