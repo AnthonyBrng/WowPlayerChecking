@@ -2,26 +2,29 @@
 import requests
 class Warcraftlogs():
     '''
-    as
+    AUTHOR:         Anthony Bruening
+    DESCRIPTION:    Getting information from the Warcraftlogs-Api
+    INPUT:          playername - string
+                    playerserver - string
+                    playerregion - string
+                    role - string
+                    api_key - string
     '''
-
-
-    baseUrl = "https://www.warcraftlogs.com:443/v1/"
-    wlUrl = "https://www.warcraftlogs.com/"
-
+    #-------------------------------------------------
     '''
     [
         {
-        "difficulty": integer
-        "bosses" : [
-                        {
-                            "bossName": string
-                            "bracket" : integer
-                            "DPS":  integera
-                            "report_id": string
-                            "fight_id" : integer
-                        }
-                    ]
+            "difficulty": integer
+            "bosses" :
+            [
+                {
+                    "bossName": string
+                    "bracket" : integer
+                    "DPS":  integera
+                    "report_id": string
+                    "fight_id" : integer
+                }
+            ]
         }
     ]
     '''
@@ -39,10 +42,9 @@ class Warcraftlogs():
 
     def get_json(self, url):
         '''
-        Gets a JSON-list, downloaded from an URL
-
-        INPUT:  url - string
-        OUTPUT: list
+        DESCRIPTION:    Gets a JSON-list, downloaded from an URL
+        INPUT:          url - string
+        OUTPUT:         json
         '''
         print("Downloading JSON from {}...".format(url))
         try:
@@ -54,23 +56,20 @@ class Warcraftlogs():
             print("...Done! (Downloading)")
             return req.json()
 
-
-
     def get_classname(self, class_id):
         '''
-        Get the class-name-lable from an class_id
-
-        INPUT:  class_id - integer
-        OUTPUT: string
+        DESCRIPTION:    Get the class-name-lable from an class_id
+        INPUT:          class_id - integer
+        OUTPUT:         string
         '''
         return classes[class_id-1]["name"]
 
 
     def get_bossname(self, boss_id):
         '''
-        Returns the Boss-Name of a boss-id.
-        INPUT: boss_id - integera
-        OUTPUT: string
+        DESCRIPTION:    Returns the Boss-Name of a boss-id.
+        INPUT:          boss_id - integera
+        OUTPUT:         string
         '''
         for zone in zones:
             for encounter in zone["encounters"]:
@@ -80,8 +79,11 @@ class Warcraftlogs():
 
     def get_Stats(self, difficulty):
         '''
-        Gets all stats we want, for a specific difficulty id.
-        nhc = 3, hc = 4, mythic = 5
+        DESCRIPTION:    Gets information from api and adds the collected information
+                        to the self.output list.
+                        nhc = 3, hc = 4, mythic = 5
+        INPUT:          difficulty - integer
+        OUTPUT:         None
         '''
         result = []
         '''
@@ -107,13 +109,13 @@ class Warcraftlogs():
             ]
         '''
         for encounter in self.ranking:
-            boss_dict = {}  # return value
+            boss_dict = {}
             if encounter["difficulty"] == difficulty:
                 report_id = encounter["reportID"]
                 boss_id = encounter["encounter"]
                 bracket = round((1-encounter["rank"]/encounter["outOf"])*100)
                 '''
-                Model Schema for fights
+                Model Schema for fights e.g.
                     {
                           "id": 1,
                           "start_time": 268763,
@@ -130,11 +132,12 @@ class Warcraftlogs():
                     }
                 '''
                 fights = self.get_json(self.baseUrl + "report/fights/{}?api_key={}".format(report_id, self.api_key))
+
                 for fight in fights["fights"]:
                     if fight["boss"] == boss_id and fight["kill"] and fight["difficulty"] == difficulty:
                         '''
                         - Table view reports
-                        Model Schema for playerInfo
+                        Model Schema for playerInfo e.g.
                         {
                             "name": "Kesanna",
                             "id": 26,
@@ -151,6 +154,7 @@ class Warcraftlogs():
                         }
                         '''
                         entries =  self.get_json(self.baseUrl + "report/tables/{}/{}?start={}&end={}&api_key={}".format( self.role,report_id, fight["start_time"], fight["end_time"], self.api_key ))
+
                         for playerInfo in entries["entries"]:
                             if playerInfo["name"] == self.pname:
                                 duration = (fight["end_time"] - fight["start_time"]) / 1000
@@ -160,14 +164,23 @@ class Warcraftlogs():
                                 boss_dict["dps"] = dps
                                 boss_dict["report"] = report_id
                                 boss_dict["fight_id"] = fight["id"]
+
                 result.append(boss_dict)
         self.output.append({"difficulty" : difficulty, "bosses": result})
-        pass
-
-
-
+        # end of function
 
     def getHtml(self):
+        '''
+        DESCRIPTION:    Builds a HTML-String to represent the wlogs-data in a table.
+        INPUT:          None
+        OUTPUT:         string
+        MODEL:          <div>
+                            <h3></hr3>
+                            <table>
+                                ...
+                            </table>
+                        </div>
+        '''
         result = "<div class='pve_panel'>"
         for entry in self.output: # entr = dict
             result += "<h3>{}</h3>".format(self.getDifficultyName(entry["difficulty"]))
@@ -177,7 +190,7 @@ class Warcraftlogs():
             dps_counter = 0
 
             for boss in entry["bosses"]:
-                result += self.html_tableRow(boss["bossName"], boss["bracket"], round(boss["dps"]), boss["report"], boss["fight_id"])
+                result += self.getPveTableRow(boss["bossName"], boss["bracket"], round(boss["dps"]), boss["report"], boss["fight_id"])
                 bracket_counter += boss["bracket"]
                 dps_counter += boss["dps"]
 
@@ -188,11 +201,34 @@ class Warcraftlogs():
         return result
 
 
-    def html_tableRow(self, bossname, bracket, dps,report_id, fight_id):
+    def getPveTableRow(self, bossname, bracket, dps,report_id, fight_id):
+        '''
+        DESCRIPTION:    Builds a html-string representing a single tablerow for
+                        the pve table
+        INPUT:          bossname - string
+                        bracket - number
+                        dps - number
+                        report_id - string
+                        fight_id - string
+        OUTPUT:         string
+        '''
         return "<tr><td class='bossname'>{}</td><td class='bracket'>{}</td><td class='dps'>{}</td><td class=wl_link><b><a class='raid_link' href='{}'>*</a></b></td></tr>".format(bossname, bracket, dps, self.wlUrl+"/reports/"+report_id+"#fight="+str(fight_id))
 
     def html_tableFoot(self, bossname, bracket, dps):
+        '''
+        DESCRIPTION:    Builds a html-string representing a the tablefoot for
+                        the pve table
+        INPUT:          bossname - string
+                        bracket - number
+                        dps - number
+        OUTPUT:         string
+        '''
         return "<tr class='tablefoot'><td class='bossname'><b>{}</b></td><td class='bracket'><b>{}</b></td><td class='dps'><b>{}</b></td><td> </td></tr>".format(bossname, bracket, dps)
 
-    def getDifficultyName(self, id):
-        return ["Unknown difficulty","Unknown difficulty","Unknown difficulty","Normal","Heroic","Mythic"][id]
+    def getDifficultyName(self, diffid):
+        '''
+        DESCRIPTION:    Get the difficultyname for a corresponding difficulty id.
+        INPUT:          diffid - integer
+        OUTPUT:         string
+        '''
+        return ["Unknown difficulty","Unknown difficulty","Unknown difficulty","Normal","Heroic","Mythic"][diffid]

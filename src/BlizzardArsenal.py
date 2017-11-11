@@ -6,6 +6,10 @@ class BlizzStats():
     AUTHOR:         Anthony Bruening
     DESCRIPTION:    Collecting Data from the blizzard-api. Specific the
                     'WoW Community API'.
+    INPUT:          playername - string
+                    playerserver - string
+                    playerregion - string
+                    api_key - string
     '''
 
     def __init__(self, player_name, player_server, player_region, api_key):
@@ -285,6 +289,7 @@ class BlizzStats():
         INPUT:          None
         OUTPUT:         string
         MODEL:          <div>
+                            <h3></hr3>
                             <table>
                                 ...
                             </table>
@@ -307,6 +312,7 @@ class BlizzStats():
         INPUT:          None
         OUTPUT:         string
         MODEL:          <div>
+                            <h3></hr3>
                             <table>
                                 ...
                             </table>
@@ -332,7 +338,7 @@ class BlizzStats():
         '''
         result = "<tr><td>{}</td>".format(pvptype)
         for stat in stats:
-            result += "<td class='{0}' id='number_td'>{0}</td>".format(stats[stat]) #result += "<td>{}</td><td>{}</td><td>{}</td><td>{}%</td>".format(rating, seasonWon, seasonPlayed, (seasonWon/seasonPlayed) * 100)
+            result += "<td class='{0}' id='number_td'>{0}</td>".format(stats[stat])
         result +="<td id='number_td'>{:05.2f}%</td>".format(stats["seasonWon"] / stats["seasonPlayed"]*100)
         result += "</tr>"
         return result
