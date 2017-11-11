@@ -50,3 +50,4 @@ Make sure you have performed the following things before running this apllicatio
   - Windows
   - Mac
 - performance optimization
+- update Running App section
