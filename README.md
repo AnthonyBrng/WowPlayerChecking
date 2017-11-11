@@ -19,6 +19,7 @@ Make sure you have performed the following things before running this apllicatio
 2. Open the terminal/commandline
 3. change your directory to WowPlayerChecking
 4. `python3 check.py --help`
+5. after running the check.py check the players folder for the output file
 
 # Getting API Keys
 ### Blizzard API Key
