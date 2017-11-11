@@ -1,8 +1,9 @@
 # pip install requests
 import requests
 class Warcraftlogs():
-'''
-'''
+    '''
+    as
+    '''
 
 
     baseUrl = "https://www.warcraftlogs.com:443/v1/"

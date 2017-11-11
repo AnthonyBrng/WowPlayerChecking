@@ -10,14 +10,15 @@ from src.BlizzardArsenal import BlizzStats
 from settings import *
 
 def main():
-
+    
+    err_msgs = []
     if BLIZZARD_APIKEY == '':
-        sys.stderr.write("Error: Please make sure the Blizzard-Apikey is set in settings.py!")
-        sys.stderr.flush()
-        exit(1)
-
+        err_msgs.append("Error: Please make sure the Blizzard-Apikey is set in settings.py!")
     if WARCRAFTLOGS_APIKEY == '':
-        sys.stderr.write("Error: Please make sure the Warcraftlogs-Apikey is set in settings.py!")
+        err_msgs.append("Error: Please make sure the Warcraftlogs-Apikey is set in settings.py!")
+    if len(err_msgs) != 0:
+        for msg in err_msgs:
+            sys.stderr.write(msg+"\n")
         sys.stderr.flush()
         exit(1)
 
