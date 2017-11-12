@@ -1,5 +1,5 @@
 
-import requests
+from .stdio import debugPrint, get_json
 
 
 class BlizzStats():
@@ -65,7 +65,7 @@ class BlizzStats():
                                 }
                         }
         '''
-        return  self.get_json(self.baseUrl+"character/{}/{}?fields=pvp&locale=en_GB&apikey={}".format(self.pserver, self.pname, self.api_key))
+        return  get_json(self.baseUrl+"character/{}/{}?fields=pvp&locale=en_GB&apikey={}".format(self.pserver, self.pname, self.api_key))
 
 
 
@@ -91,7 +91,7 @@ class BlizzStats():
                             ]
                         }
         '''
-        class_json = self.get_json(self.baseUrl+ "data/character/classes?locale=en_GB&apikey={}".format(self.api_key))
+        class_json = get_json(self.baseUrl+ "data/character/classes?locale=en_GB&apikey={}".format(self.api_key))
         classes = ["Unknown-Class"]
         for pclass in class_json["classes"]:
             classes.append(pclass["name"])
@@ -128,8 +128,7 @@ class BlizzStats():
                             ]
                         }
         '''
-        race_json = self.get_json(self.baseUrl+ "data/character/races?locale=en_GB&apikey={}".format(self.api_key))
-        print(race_json)
+        race_json = get_json(self.baseUrl+ "data/character/races?locale=en_GB&apikey={}".format(self.api_key))
         races = {}
         for race in race_json["races"]:
             races["_"+str(race["id"])] = race["name"]
@@ -142,23 +141,6 @@ class BlizzStats():
         OUTPUT:         string
         '''
         return self.races["_" + str(raceid)]
-
-
-    def get_json(self, url):
-        '''
-        DESCRIPTION:    Gets a JSON-list, downloaded from an URL
-        INPUT:          url - string
-        OUTPUT:         json
-        '''
-        print("Downloading JSON from {}...".format(url))
-        try:
-            req = requests.get(url=url)
-        except:
-            print("Error on pulling from {} !".format(url))
-            exit()
-        else:
-            print("...Done! (Downloading)")
-            return req.json()
 
     def buildCharinfo(self):
         '''
@@ -190,11 +172,11 @@ class BlizzStats():
                                 }
                         }
         '''
-        print("Building player stats...")
+        debugPrint("Building player stats...")
         charprofile_json = self.getCharacterProfile()
         charprofile_json["race"] = self.getRaceById(charprofile_json["race"])
         charprofile_json["class"] = self.getClassById(charprofile_json["class"])
-        print("...Done! (Playerstats)")
+        debugPrint("...Done! (Playerstats)")
         return charprofile_json
 
 
@@ -212,7 +194,7 @@ class BlizzStats():
                                 }
                         }
         '''
-        print("Calculating pvp stats...")
+        debugPrint("Calculating pvp stats...")
         result = {}
         pvpinfo_json = self.charInfo["pvp"]["brackets"]
         result["2v2"] = {
@@ -232,7 +214,7 @@ class BlizzStats():
             "seasonPlayed": pvpinfo_json["ARENA_BRACKET_RBG"]["seasonPlayed"]
 
         }
-        print("...Done! (pvp stats)")
+        debugPrint("...Done! (pvp stats)")
         return result
 
 
@@ -252,9 +234,9 @@ class BlizzStats():
                         }
         SEE:            https://us.battle.net/forums/en/bnet/topic/20752275890
         '''
-        print("Calculating Mythic+ stats...")
+        debugPrint("Calculating Mythic+ stats...")
         url = self.baseUrl+"/character/{}/{}?fields=achievements&locale=en_GB&apikey={}".format(self.pserver, self.pname, self.api_key)
-        mplus_json = self.get_json(url)
+        mplus_json = get_json(url)
 
         # Achivement criteria id for..
         mplus_crits = {
@@ -280,7 +262,7 @@ class BlizzStats():
             except ValueError:
                 quants[critname] = 0
 
-        print("...Done!")
+        debugPrint("...Done!")
         return quants
 
     def getMplusHtml(self):

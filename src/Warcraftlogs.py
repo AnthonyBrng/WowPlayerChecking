@@ -1,5 +1,6 @@
-# pip install requests
-import requests
+from .stdio import debugPrint, get_json
+
+
 class Warcraftlogs():
     '''
     AUTHOR:         Anthony Bruening
@@ -36,25 +37,10 @@ class Warcraftlogs():
         self.pregion = player.region
         self.role = role
         self.api_key = api_key
-        self.classes = self.get_json(self.baseUrl + "classes?api_key={}".format(api_key))
-        self.zones = self.get_json(self.baseUrl + "zones?api_key={}".format(api_key))
-        self.ranking = self.get_json(self.baseUrl + "rankings/character/{}/{}/{}?api_key={}".format(self.pname, self.pserver, self.pregion, self.api_key))
+        self.classes = get_json(self.baseUrl + "classes?api_key={}".format(api_key))
+        self.zones = get_json(self.baseUrl + "zones?api_key={}".format(api_key))
+        self.ranking = get_json(self.baseUrl + "rankings/character/{}/{}/{}?api_key={}".format(self.pname, self.pserver, self.pregion, self.api_key))
 
-    def get_json(self, url):
-        '''
-        DESCRIPTION:    Gets a JSON-list, downloaded from an URL
-        INPUT:          url - string
-        OUTPUT:         json
-        '''
-        print("Downloading JSON from {}...".format(url))
-        try:
-            req = requests.get(url=url)
-        except:
-            print("Error on pulling from Warcraftlogs!")
-            exit()
-        else:
-            print("...Done! (Downloading)")
-            return req.json()
 
     def get_classname(self, class_id):
         '''
@@ -131,7 +117,7 @@ class Warcraftlogs():
                           "name": "Goroth"
                     }
                 '''
-                fights = self.get_json(self.baseUrl + "report/fights/{}?api_key={}".format(report_id, self.api_key))
+                fights = get_json(self.baseUrl + "report/fights/{}?api_key={}".format(report_id, self.api_key))
 
                 for fight in fights["fights"]:
                     if fight["boss"] == boss_id and fight["kill"] and fight["difficulty"] == difficulty:
@@ -153,7 +139,7 @@ class Warcraftlogs():
                             "gear": []
                         }
                         '''
-                        entries =  self.get_json(self.baseUrl + "report/tables/{}/{}?start={}&end={}&api_key={}".format( self.role,report_id, fight["start_time"], fight["end_time"], self.api_key ))
+                        entries =  get_json(self.baseUrl + "report/tables/{}/{}?start={}&end={}&api_key={}".format( self.role,report_id, fight["start_time"], fight["end_time"], self.api_key ))
 
                         for playerInfo in entries["entries"]:
                             if playerInfo["name"] == self.pname:
