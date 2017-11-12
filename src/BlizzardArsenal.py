@@ -339,7 +339,10 @@ class BlizzStats():
         result = "<tr><td>{}</td>".format(pvptype)
         for stat in stats:
             result += "<td class='{0}' id='number_td'>{0}</td>".format(stats[stat])
-        result +="<td id='number_td'>{:05.2f}%</td>".format(stats["seasonWon"] / stats["seasonPlayed"]*100)
+        if stats["seasonPlayed"] == 0 :
+            result +="<td id='number_td'>Not played yet</td>"
+        else:
+            result +="<td id='number_td'>{:05.2f}%</td>".format(stats["seasonWon"] / stats["seasonPlayed"]*100)
         result += "</tr>"
         return result
 
@@ -360,7 +363,7 @@ class BlizzStats():
         OUTPUT:         string
         '''
         return {
-            "Death Knigh": "#C41F3B",
+            "Death Knight": "#C41F3B",
             "Demon Hunter":"#A330C9",
             "Druid":"#FF7D0A",
             "Hunter":"#ABD473",

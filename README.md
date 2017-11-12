@@ -1,4 +1,4 @@
-# WoW player checking 
+# WoW player checking
 Checks the performance from a World-of-Warcraft-Player, using the Warcraftlogs-API and the Blizzard-Api.
 Sections:
 - [Installation requirements](#installation-requirments)
@@ -6,7 +6,7 @@ Sections:
   - [Blizzard API Key](#blizzard-api-key)
   - [Warcraftlogs API Key](#warcraftlogs-api-key)
 - [Things to TODO](#things-to-todo)
-	
+
 # Installation requirements
 Make sure you have performed the following things before running this apllication:
 * install Python3.6 or higher	(https://www.python.org/downloads/windows/)
@@ -46,9 +46,13 @@ Make sure you have performed the following things before running this apllicatio
   - external .css file
 - create HTML API
 - create CSV API
-- GUI
+- improve GUI
+  - check inputs
+  - calling check.py from the gui
+  - improve code quality for check_gui.py
 - installer for
   - Windows
   - Mac
 - performance optimization
 - update Running App section
+- Dps Brackets are shown ONLY from specific spec. (currently all specs are shown)
