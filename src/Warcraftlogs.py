@@ -4,9 +4,7 @@ class Warcraftlogs():
     '''
     AUTHOR:         Anthony Bruening
     DESCRIPTION:    Getting information from the Warcraftlogs-Api
-    INPUT:          playername - string
-                    playerserver - string
-                    playerregion - string
+    INPUT:          player - Player-Object
                     role - string
                     api_key - string
     '''
@@ -32,10 +30,10 @@ class Warcraftlogs():
     baseUrl = "https://www.warcraftlogs.com:443/v1/"
     wlUrl = "https://www.warcraftlogs.com/"
 
-    def __init__(self, player_name, player_server, player_region, role, api_key):
-        self.pname = player_name
-        self.pserver = player_server
-        self.pregion = player_region
+    def __init__(self, player, role, api_key):
+        self.pname = player.name
+        self.pserver = player.server
+        self.pregion = player.region
         self.role = role
         self.api_key = api_key
         self.classes = self.get_json(self.baseUrl + "classes?api_key={}".format(api_key))
@@ -214,7 +212,7 @@ class Warcraftlogs():
                         fight_id - string
         OUTPUT:         string
         '''
-        return "<tr><td class='bossname'>{}</td><td class='bracket'>{}</td><td class='dps'>{}</td><td class=wl_link><b><a class='raid_link' href='{}'>*</a></b></td></tr>".format(bossname, bracket, dps, self.wlUrl+"/reports/"+report_id+"#fight="+str(fight_id))
+        return "<tr><td class='bossname'>{}</td><td class='bracket'>{}</td><td class='dps'>{}</td><td class=wl_link><b><a class='raid_link' target='_blank' href='{}'>*</a></b></td></tr>".format(bossname, bracket, dps, self.wlUrl+"/reports/"+report_id+"#fight="+str(fight_id))
 
     def html_tableFoot(self, bossname, bracket, dps):
         '''

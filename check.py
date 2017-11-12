@@ -6,7 +6,9 @@ from src.Warcraftlogs import Warcraftlogs
 from src.HtmlGenerator import HtmlGen
 from src.CollectorThreads import CollectWlogsStats
 from src.BlizzardArsenal import BlizzStats
+from src.inputplayer import Player
 from settings import *
+
 
 def main():
     '''
@@ -54,7 +56,9 @@ def main():
     #--------------------------------------------
     # Collecting Data
     #
-    wlogs = Warcraftlogs(args.playername, args.server, args.region, args.role, WARCRAFTLOGS_APIKEY)
+    player = Player(args.playername, args.server, args.region)
+
+    wlogs = Warcraftlogs(player, args.role, WARCRAFTLOGS_APIKEY)
 
     collect_nhc = CollectWlogsStats(wlogs, 3)
     collect_hc = CollectWlogsStats(wlogs, 4)
@@ -64,7 +68,7 @@ def main():
     collect_hc.start()
     collect_my.start()
 
-    blizz = BlizzStats(args.playername, args.server, args.region, BLIZZARD_APIKEY)
+    blizz = BlizzStats(player, BLIZZARD_APIKEY)
 
     collect_nhc.join()
     collect_hc.join()

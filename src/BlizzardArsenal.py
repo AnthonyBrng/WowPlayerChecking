@@ -7,17 +7,15 @@ class BlizzStats():
     AUTHOR:         Anthony Bruening
     DESCRIPTION:    Collecting Data from the blizzard-api. Specific the
                     'WoW Community API'.
-    INPUT:          playername - string
-                    playerserver - string
-                    playerregion - string
+    INPUT:          player - Player-Object
                     api_key - string
     '''
 
-    def __init__(self, player_name, player_server, player_region, api_key):
-        self.pname = player_name
-        self.pserver = player_server
-        self.pregion = player_region
-        self.baseUrl = self.getBaseUrlFromRegion(player_region)
+    def __init__(self, player, api_key):
+        self.pname = player.name
+        self.pserver = player.server
+        self.pregion = player.region
+        self.baseUrl = self.getBaseUrlFromRegion(self.pregion)
         self.api_key = api_key
         self.classes = self.getClassMapping()
         self.races = self.getRaceMapping()
@@ -303,7 +301,7 @@ class BlizzStats():
         for level, quant in self.mplusInfo.items():
             result += "<tr><td>Mythic {}</td><td id='number_td'>{}</td></tr>".format(level, quant)
         result += "</table>"
-        result += "<p style='text-align:center; font-family:Arial;'><a style='font-size:10px; color: #aaaaaa' href='https://www.wowprogress.com/character/{0}/{1}/{2}'>{2} on wowprogess!</a></p>".format(self.pregion, self.pserver, self.pname)
+        result += "<p style='text-align:center; font-family:Arial;'><a style='font-size:10px; color: #aaaaaa' target='_blank' href='https://www.wowprogress.com/character/{0}/{1}/{2}'>{2} on wowprogess!</a></p>".format(self.pregion, self.pserver, self.pname)
         result += "</div>"
         return result
 
@@ -352,7 +350,7 @@ class BlizzStats():
         INPUT:          None
         OUTPUT:         string
         '''
-        return "<div class='player_panel'><p class='player_paragraph'><b><a class='char_link' style='color:{};' href='{}'>{}*</a></b> on {} ({})</p><p><i>{} {}</i></p></div>".format(self.getClasscolorByClassname(self.charInfo["class"]),"https://worldofwarcraft.com/de-de/character/"+self.pserver+"/"+ self.pname, self.pname, self.pserver, self.pregion, self.charInfo["class"], self.charInfo["race"] )
+        return "<div class='player_panel'><p class='player_paragraph'><b><a class='char_link' style='color:{};' target='_blank' href='{}'>{}*</a></b> on {} ({})</p><p><i>{} {}</i></p></div>".format(self.getClasscolorByClassname(self.charInfo["class"]),"https://worldofwarcraft.com/de-de/character/"+self.pserver+"/"+ self.pname, self.pname, self.pserver, self.pregion, self.charInfo["class"], self.charInfo["race"] )
 
 
     def getClasscolorByClassname(self, classname):
