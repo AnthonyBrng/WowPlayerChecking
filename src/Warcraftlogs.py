@@ -194,7 +194,9 @@ class Warcraftlogs():
                 bracket_counter += boss["bracket"]
                 dps_counter += boss["dps"]
 
-            result += self.html_tableFoot("Durchschnitt", round(bracket_counter/len(entry["bosses"])), round(dps_counter/len(entry["bosses"])) )
+            if len(entry["bosses"]) != 0:
+                result += self.html_tableFoot("Durchschnitt", round(bracket_counter/len(entry["bosses"])), round(dps_counter/len(entry["bosses"])))
+
             result += "</table>"
 
         result += "</div>"

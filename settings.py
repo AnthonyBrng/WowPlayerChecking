@@ -35,4 +35,4 @@ BLIZZARD_APIKEY = ''
 '''
 Dont touch this below.
 '''
-VERSION = '0.3'
+VERSION = '0.3.1'
