@@ -10,6 +10,7 @@ Sections:
 # Installation requirements
 Make sure you have performed the following things before running this apllication:
 * install Python3.6 or higher	(https://www.python.org/downloads/windows/)
+* make sure to check the checkbox "add python to PATH", in the installation wizard
 * install the `requests` module for python (`pip3 install requests`)
 * you've got a Blizzard-API key			(instructions where to get them below)
 * you've got a Warcraftlogs-API key			"
