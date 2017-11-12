@@ -13,7 +13,7 @@ How to get the Api-key:
     8. Save this file
 
 '''
-WARCRAFTLOGS_APIKEY = '6bd918e14d71db254e0603d4bab015fe'
+WARCRAFTLOGS_APIKEY = ''
 
 '''
 Please enter your personal public Blizzarddev-Apikey in single quotes
@@ -29,11 +29,11 @@ How to get the Api-Key:
     8. Save this file
 
 '''
-BLIZZARD_APIKEY = 'kkaexyh7uw5rwngn8ab9y9ydrpz93vz5'
+BLIZZARD_APIKEY = ''
 
 
 '''
 Dont touch this below.
 '''
-VERSION = '0.3.1'
+VERSION = '0.3.2'
 DEBUG = True

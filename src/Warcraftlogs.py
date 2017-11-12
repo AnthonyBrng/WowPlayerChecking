@@ -1,4 +1,4 @@
-from .stdio import debugPrint, get_json
+from .stdio import get_json
 
 
 class Warcraftlogs():

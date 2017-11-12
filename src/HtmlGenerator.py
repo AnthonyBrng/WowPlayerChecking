@@ -1,5 +1,6 @@
 import pathlib
 import datetime
+from .stdio import debugPrint
 
 class HtmlGen():
     '''
@@ -25,7 +26,7 @@ class HtmlGen():
         INPUT:          None
         OUTPUT:         None
         '''
-        print("Creating HTML-files...")
+        debugPrint("Creating HTML-files...")
         content = self.buildFileContent()
         outputdir = "players"
         pathlib.Path(outputdir).mkdir(parents=True, exist_ok=True)
@@ -33,7 +34,7 @@ class HtmlGen():
         outputfile = open(outputpath, "w")
         outputfile.write(content)
         outputfile.close()
-        print("...Done! (HTML-files)")
+        debugPrint("...Done! (HTML-files)")
 
 
     def buildFileContent(self):

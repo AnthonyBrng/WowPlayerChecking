@@ -2,12 +2,14 @@
 # Imports
 import sys
 import argparse
+from settings import *
 from src.Warcraftlogs import Warcraftlogs
 from src.HtmlGenerator import HtmlGen
-from src.CollectorThreads import CollectWlogsStats
+from src.CheckerThreads import CollectWlogsStats, WorkingThread
 from src.BlizzardArsenal import BlizzStats
 from src.inputplayer import Player
-from settings import *
+from src.stdio import debugPrint
+
 
 
 def main():
@@ -52,7 +54,11 @@ def main():
     parser.add_argument("--role", help="Which stat to check. e.g. damage done or healing", choices=["damage-done", "healing"], default="damage-done")
     args = parser.parse_args()
 
-    print("Version ", VERSION)
+    sys.stdout.write("Version {}\n".format(VERSION))
+    sys.stdout.flush()
+
+    pendingOutput = WorkingThread()
+    pendingOutput.start()
     #--------------------------------------------
     # Collecting Data
     #
@@ -73,7 +79,8 @@ def main():
     collect_nhc.join()
     collect_hc.join()
     collect_my.join()
-    print("...Done! (Warcraftlogs)")
+
+    debugPrint("...Done! (Warcraftlogs)")
 
     #--------------------------------------------
     # output
@@ -81,8 +88,8 @@ def main():
     gen = HtmlGen( outputs, args.playername , args.server, args.region, args.role)
     gen.start()
 
-    print("Finished! ")
-    print("Version ", VERSION)
+    pendingOutput.stop()
+
 
 if __name__ == "__main__":
    main()

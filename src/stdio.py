@@ -1,7 +1,7 @@
 import sys
 import requests
 
-DEBUG = True
+DEBUG = False
 
 def debugPrint(msg):
     '''
