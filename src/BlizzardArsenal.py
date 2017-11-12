@@ -110,7 +110,7 @@ class BlizzStats():
         '''
         DESCRIPTION:    Get the mapping from raceid to racename from api.
         INPUT:          None
-        OUTPUT:         list of strings
+        OUTPUT:         dict
         APIMODEL:       json
                         {
                             "races": [{
@@ -129,9 +129,10 @@ class BlizzStats():
                         }
         '''
         race_json = self.get_json(self.baseUrl+ "data/character/races?locale=en_GB&apikey={}".format(self.api_key))
-        races = ["Unknown Race"]
+        print(race_json)
+        races = {}
         for race in race_json["races"]:
-            races.append(race["name"])
+            races["_"+str(race["id"])] = race["name"]
         return races
 
     def getRaceById(self, raceid):
@@ -140,7 +141,7 @@ class BlizzStats():
         INPUT:          raceid - integer
         OUTPUT:         string
         '''
-        return self.races[raceid]
+        return self.races["_" + str(raceid)]
 
 
     def get_json(self, url):
