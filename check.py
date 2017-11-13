@@ -25,7 +25,7 @@ def checkApiKeys():
         for msg in err_msgs:
             sys.stderr.write(msg+"\n")
         sys.stderr.flush()
-        exit(1)
+        sys.exit(1)
 
 
 def startCheck(player):
