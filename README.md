@@ -33,7 +33,7 @@ Sections:
 2. Doubleclick on `check_gui.py` or `check.exe`
 3. wait for the GUI to popup, (.exe version is slow)
 
-* after running the app check the players folder for the output files
+After running the app check the players folder for the output files
 
 # Getting API Keys
 ### Blizzard API Key
