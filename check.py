@@ -25,7 +25,8 @@ def checkApiKeys():
         for msg in err_msgs:
             sys.stderr.write(msg+"\n")
         sys.stderr.flush()
-        sys.exit(1)
+        return False #sys.exit(1)
+    return True
 
 
 def startCheck(player):
@@ -49,7 +50,9 @@ def startCheck(player):
                                 - M+15
     '''
 
-    checkApiKeys()
+    if not checkApiKeys() :
+        return
+
     pendingOutput = WorkingThread()
     pendingOutput.start()
 
