@@ -1,4 +1,6 @@
-class Player():
+
+
+class Player:
     '''
     DESCRIPTION:    Simple Player object containing the few important values for
                     a worldofwarcraft player.
@@ -25,10 +27,10 @@ class Player():
         OUTPUT:         None
         EXCEPTIONS:     ValueError
         '''
-        if newRole in self.supportedRoles:
+        if newRole in Player.supportedRoles:
             self.role = newRole
         else:
-            raise ValueError("Unsupported Role '{}'. Please select one of the following below\n{}".format(newRole, self.supportedRoles))
+            raise ValueError("Unsupported Role '{}'. Please select one of the following below\n{}".format(newRole, Player.supportedRoles))
 
     def printSupportedRegions(self):
         '''
@@ -37,7 +39,7 @@ class Player():
         OUTPUT:         None
         '''
         result = "Supported regions: ("
-        for region in self.supportedRoles:
+        for region in Player.supportedRoles:
             result += region + " "
         result += ")\n"
         sys.stdout.write(result)
@@ -50,10 +52,10 @@ class Player():
         OUTPUT:         None
         EXCEPTIONS:     ValueError
         '''
-        if newRegion in self.supportedRegions:
+        if newRegion in Player.supportedRegions:
             self.region = newRegion
         else:
-            raise ValueError("Unsupported Region '{}'. Please select one of the following below\n{}".format(newRegion, self.supportedRegions))
+            raise ValueError("Unsupported Region '{}'. Please select one of the following below\n{}".format(newRegion, Player.supportedRegions))
 
     def printSupportedRegions(self):
         '''
@@ -62,7 +64,7 @@ class Player():
         OUTPUT:         None
         '''
         result = "Supported regions: ("
-        for region in self.supportedRegions:
+        for region in Player.supportedRegions:
             result += region + " "
         result += ")\n"
         sys.stdout.write(result)

@@ -2,7 +2,7 @@
 # Imports
 import sys
 import argparse
-from settings import *
+from src.settings import *
 from src.Warcraftlogs import Warcraftlogs
 from src.HtmlGenerator import HtmlGen
 from src.CheckerThreads import CollectWlogsStats, WorkingThread
@@ -10,6 +10,22 @@ from src.BlizzardArsenal import BlizzStats
 from src.inputplayer import Player
 from src.stdio import debugPrint
 
+def checkApiKeys():
+    '''
+    DESCRIPTION:    Checks if all Api keys are set.
+    INPUT:          None
+    OUTPUT:         None
+    '''
+    err_msgs = []
+    if BLIZZARD_APIKEY == '':
+        err_msgs.append("Error: Please make sure the Blizzard-Apikey is set in settings.cfg!")
+    if WARCRAFTLOGS_APIKEY == '':
+        err_msgs.append("Error: Please make sure the Warcraftlogs-Apikey is set in settings.cfg!")
+    if len(err_msgs) != 0:
+        for msg in err_msgs:
+            sys.stderr.write(msg+"\n")
+        sys.stderr.flush()
+        exit(1)
 
 
 def startCheck(player):
@@ -33,6 +49,7 @@ def startCheck(player):
                                 - M+15
     '''
 
+    checkApiKeys()
     pendingOutput = WorkingThread()
     pendingOutput.start()
 
@@ -64,20 +81,6 @@ def startCheck(player):
 
 
 if __name__ == "__main__":
-    #--------------------------------------------
-    # Argument Parsing
-    #
-    err_msgs = []
-    if BLIZZARD_APIKEY == '':
-        err_msgs.append("Error: Please make sure the Blizzard-Apikey is set in settings.py!")
-    if WARCRAFTLOGS_APIKEY == '':
-        err_msgs.append("Error: Please make sure the Warcraftlogs-Apikey is set in settings.py!")
-    if len(err_msgs) != 0:
-        for msg in err_msgs:
-            sys.stderr.write(msg+"\n")
-        sys.stderr.flush()
-        exit(1)
-
     parser = argparse.ArgumentParser()
     parser.add_argument("playername", help="Name of the player")
     parser.add_argument("server", help="Server name, e.g. Blackhand")
