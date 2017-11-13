@@ -31,11 +31,11 @@ class Warcraftlogs():
     baseUrl = "https://www.warcraftlogs.com:443/v1/"
     wlUrl = "https://www.warcraftlogs.com/"
 
-    def __init__(self, player, role, api_key):
+    def __init__(self, player, api_key):
         self.pname = player.name
         self.pserver = player.server
         self.pregion = player.region
-        self.role = role
+        self.role = player.role
         self.api_key = api_key
         self.classes = get_json(self.baseUrl + "classes?api_key={}".format(api_key))
         self.zones = get_json(self.baseUrl + "zones?api_key={}".format(api_key))

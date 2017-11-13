@@ -13,12 +13,12 @@ class HtmlGen():
                     role - string
     '''
 
-    def __init__(self, divLst, playername, playerserver, playerregion, role):
+    def __init__(self, divLst, player):
         self.divLst = divLst
-        self.pname = playername
-        self.pserver = playerserver
-        self.pregion = playerregion
-        self.role = role
+        self.pname = player.name
+        self.pserver = player.server
+        self.pregion = player.region
+        self.role = player.role
 
     def start(self):
         '''

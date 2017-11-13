@@ -12,7 +12,7 @@ from src.stdio import debugPrint
 
 
 
-def main():
+def startCheck(player):
     '''
     AUTHOR:         Anthony Bruening
     DESCRIPTION:    Starting point of checking a WoW-players stats.
@@ -33,6 +33,37 @@ def main():
                                 - M+15
     '''
 
+    pendingOutput = WorkingThread()
+    pendingOutput.start()
+
+    wlogs = Warcraftlogs(player, WARCRAFTLOGS_APIKEY)
+
+    collect_nhc = CollectWlogsStats(wlogs, 3)
+    collect_hc = CollectWlogsStats(wlogs, 4)
+    collect_my = CollectWlogsStats(wlogs, 5)
+
+    collect_nhc.start()
+    collect_hc.start()
+    collect_my.start()
+
+    blizz = BlizzStats(player, BLIZZARD_APIKEY)
+
+    collect_nhc.join()
+    collect_hc.join()
+    collect_my.join()
+
+    debugPrint("...Done! (Warcraftlogs)")
+
+    #--------------------------------------------
+    # output
+    outputs = [blizz.getCharinfoHtml(), wlogs.getHtml(), blizz.getPvpHtml(), blizz.getMplusHtml()]
+    gen = HtmlGen(outputs, player)
+    gen.start()
+
+    pendingOutput.stop()
+
+
+if __name__ == "__main__":
     #--------------------------------------------
     # Argument Parsing
     #
@@ -57,39 +88,5 @@ def main():
     sys.stdout.write("Version {}\n".format(VERSION))
     sys.stdout.flush()
 
-    pendingOutput = WorkingThread()
-    pendingOutput.start()
-    #--------------------------------------------
-    # Collecting Data
-    #
-    player = Player(args.playername, args.server, args.region)
-
-    wlogs = Warcraftlogs(player, args.role, WARCRAFTLOGS_APIKEY)
-
-    collect_nhc = CollectWlogsStats(wlogs, 3)
-    collect_hc = CollectWlogsStats(wlogs, 4)
-    collect_my = CollectWlogsStats(wlogs, 5)
-
-    collect_nhc.start()
-    collect_hc.start()
-    collect_my.start()
-
-    blizz = BlizzStats(player, BLIZZARD_APIKEY)
-
-    collect_nhc.join()
-    collect_hc.join()
-    collect_my.join()
-
-    debugPrint("...Done! (Warcraftlogs)")
-
-    #--------------------------------------------
-    # output
-    outputs = [blizz.getCharinfoHtml(), wlogs.getHtml(), blizz.getPvpHtml(), blizz.getMplusHtml()]
-    gen = HtmlGen( outputs, args.playername , args.server, args.region, args.role)
-    gen.start()
-
-    pendingOutput.stop()
-
-
-if __name__ == "__main__":
-   main()
+    player = Player(args.playername, args.server, args.region, args.role)
+    startCheck(player)

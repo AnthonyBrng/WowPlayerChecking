@@ -1,6 +1,8 @@
 from tkinter import *
 from settings import *
 from subprocess import call
+from check import startCheck
+from src.inputplayer import Player
 
 def checkPlayer():
     '''
@@ -9,7 +11,8 @@ def checkPlayer():
     OUTPUT:         None
     '''
     if checkInputs():
-        call(["python3", "check.py", txtName.get(), txtServer.get(), "--region", txtRegion.get()])
+        player = Player(txtName.get(), txtServer.get(), txtRegion.get())
+        startCheck(player)
     else:
         print("Error!")
 
