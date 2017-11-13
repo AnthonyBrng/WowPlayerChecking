@@ -24,16 +24,16 @@ Sections:
 3. Make sure you entered your two API-Keys into the settings.cfg (just use an editor to open it)
 
 **For commandline usage:**<br />
-4. Open the terminal/commandline
-5. change your directory to WowPlayerChecking
-6. `python3 check.py --help` or `check.exe --help`
+1. Open the terminal/commandline
+2. change your directory to WowPlayerChecking
+3. `python3 check.py --help` or `check.exe --help`
 
 **For GUI-usage:** <br />
-4. Open the folder WowPlayerChecking
-5. Doubleclick on `check_gui.py` or `check.exe`
-6. wait for the GUI to popup, (.exe version is slow)
+1. Open the folder WowPlayerChecking
+2. Doubleclick on `check_gui.py` or `check.exe`
+3. wait for the GUI to popup, (.exe version is slow)
 
-7. after running the app check the players folder for the output files
+* after running the app check the players folder for the output files
 
 # Getting API Keys
 ### Blizzard API Key
