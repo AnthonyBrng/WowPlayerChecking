@@ -23,12 +23,12 @@ Sections:
 2. Make sure you've got a [Warcraftlogs API Key](#warcraftlogs-api-key)
 3. Make sure you entered your two API-Keys into the settings.cfg (just use an editor to open it)
 
-**For commandline usage:**
+**For commandline usage:**<br />
 4. Open the terminal/commandline
 5. change your directory to WowPlayerChecking
 6. `python3 check.py --help` or `check.exe --help`
 
-**For GUI-usage:**
+**For GUI-usage:** <br />
 4. Open the folder WowPlayerChecking
 5. Doubleclick on `check_gui.py` or `check.exe`
 6. wait for the GUI to popup, (.exe version is slow)
