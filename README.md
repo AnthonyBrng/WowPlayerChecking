@@ -8,19 +8,32 @@ Sections:
 - [Things to TODO](#things-to-todo)
 
 # Installation requirements
-Make sure you have performed the following things before running this apllication:
-* install Python3.6 or higher	(https://www.python.org/downloads/windows/)
+**If you want to use the standalone Windows-version:**
+* No requirements needed :)
+* Just download it
+* (its just a bit slower performance-wise)
+
+**If you want to use the python versions:**
+* install Python3.6 or higher	(https://www.python.org/downloads/)
 * make sure to check the checkbox "add python to PATH", in the installation wizard
 * install the `requests` module for python (`pip3 install requests`)
-* you've got a Blizzard-API key			(instructions where to get them below)
-* you've got a Warcraftlogs-API key			"
 
 # Running the app
-1. Make sure you entered your two API-Keys into the settings.py
-2. Open the terminal/commandline
-3. change your directory to WowPlayerChecking
-4. `python3 check.py --help`
-5. after running the check.py check the players folder for the output file
+1. Make sure you've got a [Blizzard API Key](#blizzard-api-key)
+2. Make sure you've got a [Warcraftlogs API Key](#warcraftlogs-api-key)
+3. Make sure you entered your two API-Keys into the settings.cfg (just use an editor to open it)
+
+**For commandline usage:**
+4. Open the terminal/commandline
+5. change your directory to WowPlayerChecking
+6. `python3 check.py --help` or `check.exe --help`
+
+**For GUI-usage:**
+4. Open the folder WowPlayerChecking
+5. Doubleclick on `check_gui.py` or `check.exe`
+6. wait for the GUI to popup, (.exe version is slow)
+
+7. after running the app check the players folder for the output files
 
 # Getting API Keys
 ### Blizzard API Key
